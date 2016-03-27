@@ -1,0 +1,24 @@
+name:                givegif
+version:             0.1.0.0
+synopsis:            Simple project template from stack
+description:         Please see README.md
+homepage:            http://github.com/passy/givegif#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Pascal Hartig
+maintainer:          phartig@rdrei.net
+copyright:           2016, Pascal Hartig
+category:            Web
+build-type:          Simple
+cabal-version:       >=1.10
+
+executable givegif
+  hs-source-dirs:      src
+  main-is:             Main.hs
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5
+                     , giphy-api
+                     , rainbow
+                     , bytestring
+                     , base64-bytestring
+                     , containers
