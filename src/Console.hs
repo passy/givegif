@@ -48,7 +48,7 @@ imageToMap img = M.union initial extra
     showPack = BS8.pack . show
 
     initial = M.singleton "inline" $ (showPack . btoi . ciInline) img
-    extra = M.fromList $ filterSnd [ ("name", showPack <$> ciName img)
+    extra = M.fromList $ filterSnd [ ("name", ciName img)
                                    , ("width", showPack <$> ciWidth img)
                                    , ("height", showPack <$> ciHeight img)
                                    , ("preserveAspectRatio", showPack . btoi <$> ciPreserveAspectRatio img)
@@ -81,8 +81,8 @@ renderImage pre post img =
   in  pre <> params p <> ":" <> b64 <> post
 
 params :: M.Map ByteString ByteString -> ByteString
-params = M.foldlWithKey' f mempty
-  where f a k b = (if BS.null b then b else b <> ";") <> k <> "=" <> a
+params = M.foldrWithKey' f mempty
+  where f k a b = (if BS.null b then b else b <> ";") <> k <> "=" <> a
 
 isScreen :: IO Bool
 isScreen = isPrefixOf "screen" <$> Env.getEnv "TERM"
