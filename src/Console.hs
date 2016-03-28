@@ -71,7 +71,7 @@ getImageRenderer = do
   return $ renderImage pre post
 
   where
-    screenPreamble = esc <> "tmux;" <> esc
+    screenPreamble = esc <> "Ptmux;" <> esc
     screenPost = esc <> "\\"
 
 renderImage :: ByteString -> ByteString -> ConsoleImage -> ByteString
