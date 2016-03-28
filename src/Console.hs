@@ -81,7 +81,7 @@ renderImage pre post img =
   in  pre <> params p <> ":" <> b64 <> post
 
 params :: M.Map ByteString ByteString -> ByteString
-params = M.foldlWithKey f mempty
+params = M.foldlWithKey' f mempty
   where f a k b = (if BS.null b then b else b <> ";") <> k <> "=" <> a
 
 isScreen :: IO Bool

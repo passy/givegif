@@ -16,6 +16,9 @@ main = hspec $ do
       it "has the right keys" $ do
         let m = C.imageToMap img
         M.keysSet m `shouldBe` S.fromList [ "inline", "name" ]
+      it "creates the right params" $ do
+        let p = C.params . C.imageToMap $ img
+        p `shouldBe` "123"
     describe "renderImage" $ do
       let img = C.consoleImage True ""
       it "renders an image without pre/post" $ do
