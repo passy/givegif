@@ -94,11 +94,4 @@ main :: IO ()
 main = do
   b <- BS.readFile "/Users/phartig/Downloads/cute-unicorn-clipart-unicorn4.png"
   render <- getImageRenderer
-  let img = ConsoleImage { ciInline = True
-                         , ciImage = b
-                         , ciName = pure "image"
-                         , ciWidth = empty
-                         , ciHeight = empty
-                         , ciPreserveAspectRatio = empty
-                         }
-  BS.putStrLn $ render img
+  BS8.putStrLn . render $ consoleImage True b
