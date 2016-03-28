@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main where
+module Console where
 
 import           Control.Monad
 import           Data.Bifunctor          (second)
@@ -15,10 +15,7 @@ import qualified Data.Map.Strict         as M
 import           Data.Maybe              (catMaybes)
 import           Data.Monoid             (mempty, (<>))
 import           Control.Applicative     (empty)
-import           Rainbow
 import qualified System.Environment      as Env
-
-import qualified Rainbow.Translate       as RT
 
 data ConsoleImage = ConsoleImage
   { ciInline              :: !Bool
@@ -89,9 +86,3 @@ params = M.foldlWithKey f mempty
 
 isScreen :: IO Bool
 isScreen = isPrefixOf "screen" <$> Env.getEnv "TERM"
-
-main :: IO ()
-main = do
-  b <- BS.readFile "/Users/phartig/Downloads/cute-unicorn-clipart-unicorn4.png"
-  render <- getImageRenderer
-  BS8.putStrLn . render $ consoleImage True b

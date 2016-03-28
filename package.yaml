@@ -1,0 +1,57 @@
+name: givegif
+version: 0.2.4.0
+synopsis: Giphy search tool for iTerm 2.
+description: Please see README.md
+homepage: http://github.com/passy/givegif#readme
+license: BSD3
+author: Pascal Hartig
+maintainer: Pascal Hartig <phartig@rdrei.net>
+# TODO: Better category, even though I don't intent to publish this on Hackage.
+category: Web
+extra-source-files:
+  - stack.yaml
+
+ghc-options:
+  - -Wall
+  - -fwarn-tabs
+  - -fwarn-incomplete-record-updates
+  - -fwarn-monomorphism-restriction
+  - -fwarn-unused-do-bind
+
+dependencies:
+  - base >= 4.7 && < 5
+  - text
+  - network-uri
+
+library:
+  source-dirs: src
+  dependencies:
+    - giphy-api
+    - bytestring
+    - base64-bytestring
+    - containers
+  exposed-modules:
+    - Console
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options: -threaded -rtsopts -with-rtsopts=-N
+    dependencies:
+      - givegif
+      - bytestring
+      - base64-bytestring
+      - hspec
+      - lens
+      - containers
+
+executables:
+  giphy-search:
+    main: Main.hs
+    source-dirs: app
+    ghc-options: -threaded -rtsopts -with-rtsopts=-N
+    dependencies:
+      - givegif
+      - optparse-applicative
+      - bytestring

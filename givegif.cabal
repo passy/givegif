@@ -1,33 +1,70 @@
+-- This file has been generated from package.yaml by hpack version 0.9.0.
+--
+-- see: https://github.com/sol/hpack
+
 name:                givegif
-version:             0.1.0.0
-synopsis:            Simple project template from stack
+version:             0.2.4.0
+synopsis:            Giphy search tool for iTerm 2.
 description:         Please see README.md
 homepage:            http://github.com/passy/givegif#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Pascal Hartig
-maintainer:          phartig@rdrei.net
-copyright:           2016, Pascal Hartig
+maintainer:          Pascal Hartig <phartig@rdrei.net>
 category:            Web
 build-type:          Simple
-cabal-version:       >=1.10
+cabal-version:       >= 1.10
 
-executable givegif
-  hs-source-dirs:      src
-  main-is:             Main.hs
-  default-language:    Haskell2010
-  ghc-options:         -Wall
-                       -fwarn-incomplete-uni-patterns
-                       -fwarn-incomplete-record-updates
-                       -fwarn-monomorphism-restriction
-                       -fwarn-missing-local-sigs
-                       -fwarn-missing-exported-sigs
-                       -fwarn-missing-import-lists
-                       -fwarn-identities
+extra-source-files:
+    stack.yaml
 
-  build-depends:       base >= 4.7 && < 5
-                     , giphy-api
-                     , rainbow
-                     , bytestring
-                     , base64-bytestring
-                     , containers
+library
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -fwarn-tabs -fwarn-incomplete-record-updates -fwarn-monomorphism-restriction -fwarn-unused-do-bind
+  build-depends:
+      base >= 4.7 && < 5
+    , text
+    , network-uri
+    , giphy-api
+    , bytestring
+    , base64-bytestring
+    , containers
+  exposed-modules:
+      Console
+  other-modules:
+      Lib
+      Paths_givegif
+  default-language: Haskell2010
+
+executable giphy-search
+  main-is: Main.hs
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -fwarn-tabs -fwarn-incomplete-record-updates -fwarn-monomorphism-restriction -fwarn-unused-do-bind -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >= 4.7 && < 5
+    , text
+    , network-uri
+    , givegif
+    , optparse-applicative
+    , bytestring
+  default-language: Haskell2010
+
+test-suite spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -fwarn-tabs -fwarn-incomplete-record-updates -fwarn-monomorphism-restriction -fwarn-unused-do-bind -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >= 4.7 && < 5
+    , text
+    , network-uri
+    , givegif
+    , bytestring
+    , base64-bytestring
+    , hspec
+    , lens
+    , containers
+  default-language: Haskell2010
