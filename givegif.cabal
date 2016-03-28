@@ -16,6 +16,15 @@ executable givegif
   hs-source-dirs:      src
   main-is:             Main.hs
   default-language:    Haskell2010
+  ghc-options:         -Wall
+                       -fwarn-incomplete-uni-patterns
+                       -fwarn-incomplete-record-updates
+                       -fwarn-monomorphism-restriction
+                       -fwarn-missing-local-sigs
+                       -fwarn-missing-exported-sigs
+                       -fwarn-missing-import-lists
+                       -fwarn-identities
+
   build-depends:       base >= 4.7 && < 5
                      , giphy-api
                      , rainbow

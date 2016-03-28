@@ -3,18 +3,22 @@
 module Main where
 
 import           Control.Monad
-import Data.Bifunctor (second)
-import           Data.ByteString        (ByteString)
-import qualified Data.ByteString        as BS
-import qualified Data.ByteString.Base64 as B64
-import qualified Data.ByteString.Char8  as BS8
-import qualified Data.ByteString.Lazy   as BSL
-import qualified Data.Map.Strict        as M
-import           Data.Monoid
+import           Data.Bifunctor          (second)
+import           Data.ByteString         (ByteString)
+import qualified Data.ByteString         as BS
+import qualified Data.ByteString.Base64  as B64
+import qualified Data.ByteString.Builder as B
+import qualified Data.ByteString.Char8   as BS8
+import qualified Data.ByteString.Lazy    as BSL
+import           Data.List               (isPrefixOf)
+import qualified Data.Map.Strict         as M
+import           Data.Maybe              (catMaybes)
+import           Data.Monoid             (mempty, (<>))
+import           Control.Applicative     (empty)
 import           Rainbow
-import Data.Maybe (catMaybes)
+import qualified System.Environment      as Env
 
-import qualified Rainbow.Translate      as RT
+import qualified Rainbow.Translate       as RT
 
 data ConsoleImage = ConsoleImage
   { ciInline              :: !Bool
@@ -23,7 +27,16 @@ data ConsoleImage = ConsoleImage
   , ciWidth               :: !(Maybe Int)
   , ciHeight              :: !(Maybe Int)
   , ciPreserveAspectRatio :: !(Maybe Bool)
-  }
+  } deriving (Eq, Show)
+
+consoleImage :: Bool -> ByteString -> ConsoleImage
+consoleImage inline image = ConsoleImage { ciInline = inline
+                                         , ciImage = image
+                                         , ciName = empty
+                                         , ciWidth = empty
+                                         , ciHeight = empty
+                                         , ciPreserveAspectRatio = empty
+                                         }
 
 esc :: ByteString
 esc = "\ESC"
@@ -51,7 +64,7 @@ imageToMap img = M.union initial extra
     liftSnd (a, Just b) = Just (a, b)
     liftSnd _ = Nothing
 
-
+-- TODO: Use a builder.
 getImageRenderer :: IO (ConsoleImage -> ByteString)
 getImageRenderer = do
   screen <- isScreen
@@ -70,15 +83,22 @@ renderImage pre post img =
       p   = imageToMap img
   in  pre <> params p <> ":" <> b64 <> post
 
-params :: (Show a, Show b) => M.Map a b -> ByteString
-params = undefined
+params :: M.Map ByteString ByteString -> ByteString
+params = M.foldlWithKey f mempty
+  where f a k b = (if BS.null b then b else b <> ";") <> k <> "=" <> a
 
 isScreen :: IO Bool
-isScreen = undefined
+isScreen = isPrefixOf "screen" <$> Env.getEnv "TERM"
 
 main :: IO ()
 main = do
-  b <- b64 "/Users/phartig/Downloads/cute-unicorn-clipart-unicorn4.png"
-  BS8.putStrLn $ "\ESC]1337;File=inline=1:" <> b <> "\a"
-  where
-    b64 f = B64.encode <$> BS.readFile f
+  b <- BS.readFile "/Users/phartig/Downloads/cute-unicorn-clipart-unicorn4.png"
+  render <- getImageRenderer
+  let img = ConsoleImage { ciInline = True
+                         , ciImage = b
+                         , ciName = pure "image"
+                         , ciWidth = empty
+                         , ciHeight = empty
+                         , ciPreserveAspectRatio = empty
+                         }
+  BS.putStrLn $ render img
