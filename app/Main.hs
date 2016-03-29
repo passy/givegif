@@ -2,15 +2,14 @@
 
 module Main where
 
-import qualified Data.ByteString           as BS
 import qualified Data.ByteString.Lazy      as BSL
+import qualified Data.ByteString.Char8     as BS8
 import qualified Data.Text                 as T
 import qualified Network.Wreq              as Wreq
 import qualified Options.Applicative       as Opt
 import qualified Options.Applicative.Types as Opt
 import qualified Web.Giphy                 as Giphy
 
-import           Control.Monad.IO.Class    (liftIO)
 import           Control.Applicative       (optional, (<**>), (<|>))
 import           Control.Lens.At           (at)
 import           Control.Lens.Cons         (_head)
@@ -80,10 +79,10 @@ main = do
                          . Giphy.imageUrl
                          . traverse
 
-      resp <- sequence $ Wreq.get <$> (show <$> fstUrl)
-      case resp of
+      resp' <- sequence $ Wreq.get <$> (show <$> fstUrl)
+      case resp' of
         Just r -> printGif r
-        Nothing -> print "Nay"
+        Nothing -> BS8.putStrLn "error."
 
     getApp :: Options -> Giphy.Giphy [Giphy.Gif]
     getApp opts =
@@ -95,7 +94,9 @@ main = do
     printGif :: Wreq.Response BSL.ByteString -> IO ()
     printGif r = do
       render <- getImageRenderer
-      BS.putStrLn . render $ consoleImage True (BSL.toStrict $ r ^. Wreq.responseBody)
+      -- TODO: Should this all be lazy? I don't know what the memory
+      -- implications are.
+      BS8.putStrLn . render $ consoleImage True (BSL.toStrict $ r ^. Wreq.responseBody)
 
 translateApp :: T.Text -> Giphy.Giphy [Giphy.Gif]
 translateApp q = do
