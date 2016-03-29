@@ -11,7 +11,7 @@ import qualified Data.ByteString.Lazy    as BSL
 import           Data.List               (isPrefixOf)
 import qualified Data.Map.Strict         as M
 import           Data.Maybe              (catMaybes)
-import           Data.Monoid             (mempty, (<>))
+import           Data.Monoid             ((<>))
 import           Control.Applicative     (empty)
 import qualified System.Environment      as Env
 
