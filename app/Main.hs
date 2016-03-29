@@ -94,8 +94,6 @@ main = do
     printGif :: Wreq.Response BSL.ByteString -> IO ()
     printGif r = do
       render <- getImageRenderer
-      -- TODO: Should this all be lazy? I don't know what the memory
-      -- implications are.
       BS8.putStrLn . render $ consoleImage True (r ^. Wreq.responseBody)
 
 translateApp :: T.Text -> Giphy.Giphy [Giphy.Gif]

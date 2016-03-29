@@ -11,7 +11,7 @@ import qualified Data.ByteString.Lazy.Char8  as BS8
 import           Data.List                   (isPrefixOf)
 import qualified Data.Map.Strict             as M
 import           Data.Maybe                  (catMaybes)
-import           Data.Monoid                 ((<>))
+import           Data.Monoid                 ((<>), mempty)
 import qualified System.Environment          as Env
 
 data ConsoleImage = ConsoleImage
@@ -32,8 +32,8 @@ consoleImage inline image = ConsoleImage { ciInline = inline
                                          , ciPreserveAspectRatio = empty
                                          }
 
-esc :: ByteString
-esc = "\ESC"
+esc :: B.Builder
+esc = B.char8 '\ESC'
 
 imageToMap :: ConsoleImage -> M.Map ByteString ByteString
 imageToMap img = M.union initial extra
@@ -58,28 +58,30 @@ imageToMap img = M.union initial extra
     liftSnd (a, Just b) = Just (a, b)
     liftSnd _ = Nothing
 
--- TODO: Use a builder.
 getImageRenderer :: IO (ConsoleImage -> ByteString)
 getImageRenderer = do
   screen <- isScreen
-  let pre = (if screen then screenPreamble else "") <> esc <> "]1337;File="
-  let post = "\a" <> (if screen then screenPost else "")
+  let pre = if screen then screenPreamble else mempty <> esc <> B.stringUtf8 "]1337;File="
+  let post = B.char8 '\a' <> if screen then screenPost else mempty
 
   return $ renderImage pre post
 
   where
-    screenPreamble = esc <> "Ptmux;" <> esc
-    screenPost = esc <> "\\"
+    screenPreamble = esc <> B.stringUtf8 "Ptmux;" <> esc
+    screenPost = esc <> B.char8 '\\'
 
-renderImage :: ByteString -> ByteString -> ConsoleImage -> ByteString
+renderImage :: B.Builder -> B.Builder -> ConsoleImage -> ByteString
 renderImage pre post img =
-  let b64 = B64.encode (ciImage img)
+  let b64 = B.lazyByteString $ B64.encode (ciImage img)
       p   = imageToMap img
-  in  pre <> params p <> ":" <> b64 <> post
+  in  B.toLazyByteString $ pre <> params p <> ":" <> b64 <> post
 
-params :: M.Map ByteString ByteString -> ByteString
-params = M.foldrWithKey' f mempty
-  where f k a b = (if BSL.null b then b else b <> ";") <> k <> "=" <> a
+params :: M.Map ByteString ByteString -> B.Builder
+params = snd . M.foldrWithKey' f (True, mempty)
+  where
+    f k a (empty, b) = let start = if empty then b else b <> B.char8 ';'
+                           end   = B.lazyByteString k <> B.char8 '=' <> B.lazyByteString a
+                       in (False, start <> end)
 
 isScreen :: IO Bool
 isScreen = isPrefixOf "screen" <$> Env.getEnv "TERM"
