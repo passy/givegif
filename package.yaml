@@ -9,6 +9,7 @@ maintainer: Pascal Hartig <phartig@rdrei.net>
 category: Console
 extra-source-files:
   - stack.yaml
+  - README.md
 
 ghc-options:
   - -Wall
@@ -58,3 +59,5 @@ executables:
       - lens
       - wreq
       - transformers
+    other-modules:
+      - Paths_givegif
