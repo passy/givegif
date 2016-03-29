@@ -6,8 +6,7 @@ homepage: http://github.com/passy/givegif#readme
 license: BSD3
 author: Pascal Hartig
 maintainer: Pascal Hartig <phartig@rdrei.net>
-# TODO: Better category, even though I don't intent to publish this on Hackage.
-category: Web
+category: Console
 extra-source-files:
   - stack.yaml
 
@@ -53,5 +52,9 @@ executables:
     ghc-options: -threaded -rtsopts -with-rtsopts=-N
     dependencies:
       - givegif
+      - giphy-api
       - optparse-applicative
       - bytestring
+      - lens
+      - wreq
+      - transformers

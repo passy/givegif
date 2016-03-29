@@ -2,8 +2,6 @@
 
 module Console where
 
-import           Control.Monad
-import           Data.Bifunctor          (second)
 import           Data.ByteString         (ByteString)
 import qualified Data.ByteString         as BS
 import qualified Data.ByteString.Base64  as B64
