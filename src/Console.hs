@@ -2,18 +2,17 @@
 
 module Console where
 
-import           Data.ByteString         (ByteString)
-import qualified Data.ByteString         as BS
-import qualified Data.ByteString.Base64  as B64
-import qualified Data.ByteString.Builder as B
-import qualified Data.ByteString.Char8   as BS8
-import qualified Data.ByteString.Lazy    as BSL
-import           Data.List               (isPrefixOf)
-import qualified Data.Map.Strict         as M
-import           Data.Maybe              (catMaybes)
-import           Data.Monoid             ((<>))
-import           Control.Applicative     (empty)
-import qualified System.Environment      as Env
+import           Control.Applicative         (empty)
+import qualified Data.ByteString.Base64.Lazy as B64
+import qualified Data.ByteString.Builder     as B
+import           Data.ByteString.Lazy        (ByteString)
+import qualified Data.ByteString.Lazy        as BSL
+import qualified Data.ByteString.Lazy.Char8  as BS8
+import           Data.List                   (isPrefixOf)
+import qualified Data.Map.Strict             as M
+import           Data.Maybe                  (catMaybes)
+import           Data.Monoid                 ((<>))
+import qualified System.Environment          as Env
 
 data ConsoleImage = ConsoleImage
   { ciInline              :: !Bool
@@ -80,7 +79,7 @@ renderImage pre post img =
 
 params :: M.Map ByteString ByteString -> ByteString
 params = M.foldrWithKey' f mempty
-  where f k a b = (if BS.null b then b else b <> ";") <> k <> "=" <> a
+  where f k a b = (if BSL.null b then b else b <> ";") <> k <> "=" <> a
 
 isScreen :: IO Bool
 isScreen = isPrefixOf "screen" <$> Env.getEnv "TERM"

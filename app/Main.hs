@@ -2,23 +2,23 @@
 
 module Main where
 
-import qualified Data.ByteString.Lazy      as BSL
-import qualified Data.ByteString.Char8     as BS8
-import qualified Data.Text                 as T
-import qualified Network.Wreq              as Wreq
-import qualified Options.Applicative       as Opt
-import qualified Options.Applicative.Types as Opt
-import qualified Web.Giphy                 as Giphy
+import qualified Data.ByteString.Lazy       as BSL
+import qualified Data.ByteString.Lazy.Char8 as BS8
+import qualified Data.Text                  as T
+import qualified Network.Wreq               as Wreq
+import qualified Options.Applicative        as Opt
+import qualified Options.Applicative.Types  as Opt
+import qualified Web.Giphy                  as Giphy
 
-import           Control.Applicative       (optional, (<**>), (<|>))
-import           Control.Lens.At           (at)
-import           Control.Lens.Cons         (_head)
+import           Control.Applicative        (optional, (<**>), (<|>))
+import           Control.Lens.At            (at)
+import           Control.Lens.Cons          (_head)
 import           Control.Lens.Operators
-import           Control.Lens.Prism        (_Right)
-import           Data.Monoid               ((<>))
-import           Data.Version              (Version (), showVersion)
-import           Paths_givegif             (version)
-import           System.Environment        (getProgName)
+import           Control.Lens.Prism         (_Right)
+import           Data.Monoid                ((<>))
+import           Data.Version               (Version (), showVersion)
+import           Paths_givegif              (version)
+import           System.Environment         (getProgName)
 
 import           Console
 
@@ -96,7 +96,7 @@ main = do
       render <- getImageRenderer
       -- TODO: Should this all be lazy? I don't know what the memory
       -- implications are.
-      BS8.putStrLn . render $ consoleImage True (BSL.toStrict $ r ^. Wreq.responseBody)
+      BS8.putStrLn . render $ consoleImage True (r ^. Wreq.responseBody)
 
 translateApp :: T.Text -> Giphy.Giphy [Giphy.Gif]
 translateApp q = do

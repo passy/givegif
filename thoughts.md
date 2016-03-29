@@ -2,6 +2,8 @@
 
 ## ... on memory
 
+### Using strict ByteStrings
+
 Not sure if strict or lazy ByteStrings are better. Here's a single sample
 running with strict ones and a lazy conversation from wreq:
 
@@ -39,3 +41,12 @@ gen[1].sync: 2251
 ```
 
 Seems alright to me. 100MB allocations seems a lot, but not even .1s pause.
+
+### Using lazy ByteStrings, naively
+
+After just changing a bunch of imports, and importantly removing one
+lazy-to-strict conversion, the "total memory in use" for a static test image
+is reduced from 24 to 17MB and the GC pause times to strictly below 0.1s. All
+super unscientific, but already clearly better.
+
+Now, let's try builders!
