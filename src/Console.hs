@@ -6,12 +6,11 @@ import           Control.Applicative         (empty)
 import qualified Data.ByteString.Base64.Lazy as B64
 import qualified Data.ByteString.Builder     as B
 import           Data.ByteString.Lazy        (ByteString)
-import qualified Data.ByteString.Lazy        as BSL
 import qualified Data.ByteString.Lazy.Char8  as BS8
 import           Data.List                   (isPrefixOf)
 import qualified Data.Map.Strict             as M
 import           Data.Maybe                  (catMaybes)
-import           Data.Monoid                 ((<>), mempty)
+import           Data.Monoid                 ((<>))
 import qualified System.Environment          as Env
 
 data ConsoleImage = ConsoleImage
@@ -79,8 +78,8 @@ renderImage pre post img =
 params :: M.Map ByteString ByteString -> B.Builder
 params = snd . M.foldrWithKey' f (True, mempty)
   where
-    f k a (empty, b) = let start = if empty then b else b <> B.char8 ';'
-                           end   = B.lazyByteString k <> B.char8 '=' <> B.lazyByteString a
+    f k a (empty', b) = let start = if empty' then b else b <> B.char8 ';'
+                            end   = B.lazyByteString k <> B.char8 '=' <> B.lazyByteString a
                        in (False, start <> end)
 
 isScreen :: IO Bool

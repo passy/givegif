@@ -30,16 +30,17 @@ data Options = Options
 data SearchMode = OptSearch T.Text | OptTranslate T.Text | OptRandom (Maybe T.Text)
 
 options :: Opt.Parser Options
-options = Options <$> Opt.switch ( Opt.long "no-preview"
-                                <> Opt.short 'p'
-                                <> Opt.help "Don't render an inline image preview." )
-                  <*> ( ( OptSearch <$> textOption ( Opt.long "search"
-                                                <> Opt.short 's'
-                                                <> Opt.help "Use search to find a matching GIF." ) )
-                  <|> ( OptTranslate <$> textOption ( Opt.long "translate"
-                                                   <> Opt.short 't'
-                                                   <> Opt.help "Use translate to find a matching GIF." ) )
-                  <|> ( OptRandom <$> optional ( textArgument ( Opt.metavar "RANDOM_TAG" ) ) ) )
+options =
+  Options <$> Opt.switch ( Opt.long "no-preview"
+                        <> Opt.short 'p'
+                        <> Opt.help "Don't render an inline image preview." )
+          <*> ( ( OptSearch <$> textOption ( Opt.long "search"
+                                          <> Opt.short 's'
+                                          <> Opt.help "Use search to find a matching GIF." ) )
+          <|> ( OptTranslate <$> textOption ( Opt.long "translate"
+                                           <> Opt.short 't'
+                                           <> Opt.help "Use translate to find a matching GIF." ) )
+          <|> ( OptRandom <$> optional ( textArgument ( Opt.metavar "RANDOM_TAG" ) ) ) )
   where
     -- TODO: This seems quite useful. Maybe publish as Options.Applicative.Text?
     text :: Opt.ReadM T.Text
