@@ -78,6 +78,8 @@ main = do
       let config = Giphy.GiphyConfig apiKey
       let app = getApp opts
       resp <- Giphy.runGiphy app config
+      -- TODO: Funnel the functor through this, rather than reducing it
+      -- to a Maybe. I.e. maintain the Left somehow.
       let fstUrl = resp ^? _Right
                          . _head
                          . Giphy.gifImages
