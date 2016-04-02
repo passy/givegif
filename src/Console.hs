@@ -80,7 +80,7 @@ params = snd . M.foldrWithKey' f (True, mempty)
   where
     f k a (empty', b) = let start = if empty' then b else b <> B.char8 ';'
                             end   = B.lazyByteString k <> B.char8 '=' <> B.lazyByteString a
-                       in (False, start <> end)
+                        in (False, start <> end)
 
 isScreen :: IO Bool
 isScreen = isPrefixOf "screen" <$> Env.getEnv "TERM"
