@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE LambdaCase #-}
 
 module Main where
 
@@ -10,12 +11,13 @@ import qualified Options.Applicative        as Opt
 import qualified Options.Applicative.Types  as Opt
 import qualified Web.Giphy                  as Giphy
 
-import           Control.Applicative        (optional, (<**>), (<|>))
+import           Control.Applicative        (optional, (<**>), (<|>), Const(Const, getConst))
 import           Control.Lens.At            (at)
 import           Control.Lens.Cons          (_head)
 import           Control.Lens.Operators
 import           Control.Lens.Prism         (_Right)
-import           Data.Monoid                ((<>))
+import Control.Lens (Getting())
+import Data.Monoid (First(First, getFirst), (<>))
 import           Data.Version               (Version (), showVersion)
 import           Paths_givegif              (version)
 import           System.Environment         (getProgName)
@@ -68,6 +70,16 @@ cliParser progName ver =
 apiKey :: Giphy.Key
 apiKey = Giphy.Key "dc6zaTOxFJmzC"
 
+taggedPreview
+  :: Getting (First a) s a
+  -> t
+  -> s
+  -> Either t a
+taggedPreview l tag s =
+  case getFirst . getConst . l (Const . First . Just) $ s of
+    Just a -> Right a
+    Nothing -> Left tag
+
 main :: IO ()
 main = do
   progName <- getProgName
@@ -81,12 +93,12 @@ main = do
       -- TODO: Funnel the functor through this, rather than reducing it
       -- to a Maybe. I.e. maintain the Left somehow.
       let fstUrl = resp ^? _Right
-                         . _head
-                         . Giphy.gifImages
-                         . at "original"
-                         . traverse
-                         . Giphy.imageUrl
-                         . traverse
+                                 . _head
+                                 . Giphy.gifImages
+                                 . at "original"
+                                 . traverse
+                                 . Giphy.imageUrl
+                                 . traverse
 
       resp' <- sequence $ Wreq.get <$> (show <$> fstUrl)
       case resp' of
