@@ -11,16 +11,15 @@ import qualified Options.Applicative        as Opt
 import qualified Options.Applicative.Types  as Opt
 import qualified Web.Giphy                  as Giphy
 
-import           Control.Applicative        (Const (Const, getConst), optional,
+import           Control.Applicative        (optional,
                                              (<**>), (<|>))
-import Data.Bifunctor (first)
-import           Control.Lens               (Getting (), over, preview)
+import           Control.Lens               (Getting (), preview)
 import           Control.Lens.At            (at)
 import           Control.Lens.Cons          (_head)
 import           Control.Lens.Operators
-import           Control.Lens.Prism         (_Right)
+import           Control.Lens.Prism         (_Right, _Left)
 import           Control.Monad              (join)
-import           Data.Monoid                (First (First, getFirst), (<>))
+import           Data.Monoid                (First (), (<>))
 import           Data.Version               (Version (), showVersion)
 import           Paths_givegif              (version)
 import           System.Environment         (getProgName)
@@ -94,8 +93,10 @@ main = do
       let app = getApp opts
       resp <- Giphy.runGiphy app config
 
-      -- This is really messy, I'm sure there's a way to combine this all together.
-      let fstRes = join $ over _Right (taggedPreview "No results found." _head) (first show resp)
+      -- Get the first result and turn the left side into a String error
+      let fstRes = resp & _Right %~ taggedPreview "No results found." _head
+                        & _Left  %~ show
+                        & join
 
       -- TODO: Funnel the functor through this, rather than reducing it
       -- to a Maybe. I.e. maintain the Left somehow.
