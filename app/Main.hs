@@ -12,7 +12,7 @@ import qualified Options.Applicative.Types  as Opt
 import qualified Web.Giphy                  as Giphy
 
 import           Control.Applicative        (optional, (<**>), (<|>))
-import           Control.Lens               (Getting (), preview)
+import           Control.Lens               (Getting (), preview, view)
 import           Control.Lens.At            (at)
 import           Control.Lens.Cons          (_head)
 import           Control.Lens.Operators
@@ -97,19 +97,20 @@ main = do
                         & _Left  %~ show
                         & join
 
-      -- TODO: Funnel the functor through this, rather than reducing it
-      -- to a Maybe. I.e. maintain the Left somehow.
-      let fstUrl = fstRes ^? _Right
-                          . Giphy.gifImages
-                          . at "original"
-                          . traverse
-                          . Giphy.imageUrl
-                          . traverse
+      -- Turn the right hand side into an Either.
+      let fstUrl = fstRes & _Right %~ taggedPreview "No images attached."
+                                      ( Giphy.gifImages
+                                      . at "original"
+                                      . traverse
+                                      . Giphy.imageUrl
+                                      . traverse )
+                                    & join
 
       resp' <- sequence $ Wreq.get <$> (show <$> fstUrl)
       case resp' of
-        Just r -> printGif r
-        Nothing -> BS8.putStrLn "error."
+        Right r -> printGif r
+        -- TODO: Colorize and print on stderr
+        Left e -> putStrLn $ "Error: " <> e
 
     getApp :: Options -> Giphy.Giphy [Giphy.Gif]
     getApp opts =
