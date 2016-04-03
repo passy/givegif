@@ -50,7 +50,11 @@ executables:
   givegif:
     main: Main.hs
     source-dirs: app
-    ghc-options: -threaded -rtsopts -with-rtsopts=-N
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+      - -Wall
     dependencies:
       - givegif
       - giphy-api

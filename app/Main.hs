@@ -1,5 +1,5 @@
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE LambdaCase #-}
 
 module Main where
 
@@ -11,13 +11,16 @@ import qualified Options.Applicative        as Opt
 import qualified Options.Applicative.Types  as Opt
 import qualified Web.Giphy                  as Giphy
 
-import           Control.Applicative        (optional, (<**>), (<|>), Const(Const, getConst))
+import           Control.Applicative        (Const (Const, getConst), optional,
+                                             (<**>), (<|>))
+import Data.Bifunctor (first)
+import           Control.Lens               (Getting (), over, preview)
 import           Control.Lens.At            (at)
 import           Control.Lens.Cons          (_head)
 import           Control.Lens.Operators
 import           Control.Lens.Prism         (_Right)
-import Control.Lens (Getting())
-import Data.Monoid (First(First, getFirst), (<>))
+import           Control.Monad              (join)
+import           Data.Monoid                (First (First, getFirst), (<>))
 import           Data.Version               (Version (), showVersion)
 import           Paths_givegif              (version)
 import           System.Environment         (getProgName)
@@ -26,7 +29,7 @@ import           Console
 
 data Options = Options
   { optShowImage :: Bool
-  , optMode :: SearchMode
+  , optMode      :: SearchMode
   }
 
 data SearchMode = OptSearch T.Text | OptTranslate T.Text | OptRandom (Maybe T.Text)
@@ -71,12 +74,12 @@ apiKey :: Giphy.Key
 apiKey = Giphy.Key "dc6zaTOxFJmzC"
 
 taggedPreview
-  :: Getting (First a) s a
-  -> t
+  :: t
+  -> Getting (First a) s a
   -> s
   -> Either t a
-taggedPreview l tag s =
-  case getFirst . getConst . l (Const . First . Just) $ s of
+taggedPreview tag l s =
+  case preview l s of
     Just a -> Right a
     Nothing -> Left tag
 
@@ -90,15 +93,18 @@ main = do
       let config = Giphy.GiphyConfig apiKey
       let app = getApp opts
       resp <- Giphy.runGiphy app config
+
+      -- This is really messy, I'm sure there's a way to combine this all together.
+      let fstRes = join $ over _Right (taggedPreview "No results found." _head) (first show resp)
+
       -- TODO: Funnel the functor through this, rather than reducing it
       -- to a Maybe. I.e. maintain the Left somehow.
-      let fstUrl = resp ^? _Right
-                                 . _head
-                                 . Giphy.gifImages
-                                 . at "original"
-                                 . traverse
-                                 . Giphy.imageUrl
-                                 . traverse
+      let fstUrl = fstRes ^? _Right
+                          . Giphy.gifImages
+                          . at "original"
+                          . traverse
+                          . Giphy.imageUrl
+                          . traverse
 
       resp' <- sequence $ Wreq.get <$> (show <$> fstUrl)
       case resp' of
