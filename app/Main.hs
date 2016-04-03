@@ -6,6 +6,7 @@ module Main where
 import qualified Data.ByteString.Lazy       as BSL
 import qualified Data.ByteString.Lazy.Char8 as BS8
 import qualified Data.Text                  as T
+import qualified Data.Text.IO               as TIO
 import qualified Network.Wreq               as Wreq
 import qualified Options.Applicative        as Opt
 import qualified Options.Applicative.Types  as Opt
@@ -22,6 +23,7 @@ import           Data.Monoid                (First (), (<>))
 import           Data.Version               (Version (), showVersion)
 import           Paths_givegif              (version)
 import           System.Environment         (getProgName)
+import           System.IO                  (stderr)
 
 import           Console
 
@@ -94,7 +96,7 @@ main = do
 
       -- Get the first result and turn the left side into a String error
       let fstRes = resp & _Right %~ taggedPreview "No results found." _head
-                        & _Left  %~ show
+                        & _Left  %~ T.pack . show
                         & join
 
       -- Turn the right hand side into an Either.
@@ -109,8 +111,7 @@ main = do
       resp' <- sequence $ Wreq.get <$> (show <$> fstUrl)
       case resp' of
         Right r -> printGif r
-        -- TODO: Colorize and print on stderr
-        Left e -> putStrLn $ "Error: " <> e
+        Left e -> TIO.hPutStr stderr $ "Error: " <> e
 
     getApp :: Options -> Giphy.Giphy [Giphy.Gif]
     getApp opts =
