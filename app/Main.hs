@@ -13,7 +13,7 @@ import qualified Options.Applicative.Types  as Opt
 import qualified Web.Giphy                  as Giphy
 
 import           Control.Applicative        (optional, (<**>), (<|>))
-import           Control.Lens               (Getting (), preview, view)
+import           Control.Lens               (Getting (), preview)
 import           Control.Lens.At            (at)
 import           Control.Lens.Cons          (_head)
 import           Control.Lens.Operators
@@ -73,6 +73,7 @@ cliParser progName ver =
 apiKey :: Giphy.Key
 apiKey = Giphy.Key "dc6zaTOxFJmzC"
 
+-- Use Control.Error.Util for this.
 taggedPreview
   :: t
   -> Getting (First a) s a
@@ -111,7 +112,7 @@ main = do
       resp' <- sequence $ Wreq.get <$> (show <$> fstUrl)
       case resp' of
         Right r -> printGif r
-        Left e -> TIO.hPutStr stderr $ "Error: " <> e
+        Left e -> TIO.hPutStrLn stderr $ "Error: " <> e
 
     getApp :: Options -> Giphy.Giphy [Giphy.Gif]
     getApp opts =
