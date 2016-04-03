@@ -11,13 +11,12 @@ import qualified Options.Applicative        as Opt
 import qualified Options.Applicative.Types  as Opt
 import qualified Web.Giphy                  as Giphy
 
-import           Control.Applicative        (optional,
-                                             (<**>), (<|>))
+import           Control.Applicative        (optional, (<**>), (<|>))
 import           Control.Lens               (Getting (), preview)
 import           Control.Lens.At            (at)
 import           Control.Lens.Cons          (_head)
 import           Control.Lens.Operators
-import           Control.Lens.Prism         (_Right, _Left)
+import           Control.Lens.Prism         (_Left, _Right)
 import           Control.Monad              (join)
 import           Data.Monoid                (First (), (<>))
 import           Data.Version               (Version (), showVersion)

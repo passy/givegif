@@ -6,7 +6,7 @@ import           Test.Hspec
 import qualified Console as C
 import qualified Data.Map.Strict as M
 import qualified Data.Set as S
-import qualified Data.ByteString         as BS
+import qualified Data.ByteString.Builder as B
 
 main :: IO ()
 main = hspec $ do
@@ -18,7 +18,7 @@ main = hspec $ do
         let m = C.imageToMap img
         M.keysSet m `shouldBe` S.fromList [ "inline", "name", "preserveAspectRatio" ]
       it "creates the right params" $ do
-        let p = C.params . C.imageToMap $ img
+        let p = B.toLazyByteString . C.params . C.imageToMap $ img
         p `shouldBe` "preserveAspectRatio=1;name=myimage.png;inline=1"
     describe "renderImage" $ do
       it "renders an image without pre/post" $ do
