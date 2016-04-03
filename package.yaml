@@ -63,5 +63,6 @@ executables:
       - lens
       - wreq
       - transformers
+      - errors
     other-modules:
       - Paths_givegif

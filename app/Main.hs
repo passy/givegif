@@ -11,6 +11,7 @@ import qualified Network.Wreq               as Wreq
 import qualified Options.Applicative        as Opt
 import qualified Options.Applicative.Types  as Opt
 import qualified Web.Giphy                  as Giphy
+import qualified Control.Error.Util         as Err
 
 import           Control.Applicative        (optional, (<**>), (<|>))
 import           Control.Lens               (Getting (), preview)
@@ -73,16 +74,12 @@ cliParser progName ver =
 apiKey :: Giphy.Key
 apiKey = Giphy.Key "dc6zaTOxFJmzC"
 
--- Use Control.Error.Util for this.
 taggedPreview
   :: t
   -> Getting (First a) s a
   -> s
   -> Either t a
-taggedPreview tag l s =
-  case preview l s of
-    Just a -> Right a
-    Nothing -> Left tag
+taggedPreview tag l s = Err.note tag $ preview l s
 
 main :: IO ()
 main = do
