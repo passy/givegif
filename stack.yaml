@@ -2,7 +2,5 @@ flags: {}
 extra-package-dbs: []
 packages:
 - '.'
-extra-deps:
-- giphy-api-0.2.3.0
-- text-1.2.2.1
-resolver: lts-5.10
+extra-deps: []
+resolver: nightly-2016-04-05
