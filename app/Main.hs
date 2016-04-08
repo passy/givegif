@@ -3,6 +3,7 @@
 
 module Main where
 
+import qualified Control.Error.Util         as Err
 import qualified Data.ByteString.Lazy       as BSL
 import qualified Data.ByteString.Lazy.Char8 as BS8
 import qualified Data.Text                  as T
@@ -11,7 +12,6 @@ import qualified Network.Wreq               as Wreq
 import qualified Options.Applicative        as Opt
 import qualified Options.Applicative.Types  as Opt
 import qualified Web.Giphy                  as Giphy
-import qualified Control.Error.Util         as Err
 
 import           Control.Applicative        (optional, (<**>), (<|>))
 import           Control.Lens               (Getting (), preview)
@@ -19,7 +19,7 @@ import           Control.Lens.At            (at)
 import           Control.Lens.Cons          (_head)
 import           Control.Lens.Operators
 import           Control.Lens.Prism         (_Left, _Right)
-import           Control.Monad              (join)
+import           Control.Monad              (join, unless)
 import           Data.Monoid                (First (), (<>))
 import           Data.Version               (Version (), showVersion)
 import           Paths_givegif              (version)
@@ -29,7 +29,7 @@ import           System.IO                  (stderr)
 import           Console
 
 data Options = Options
-  { optShowImage :: Bool
+  { optNoPreview :: Bool
   , optMode      :: SearchMode
   }
 
@@ -38,7 +38,7 @@ data SearchMode = OptSearch T.Text | OptTranslate T.Text | OptRandom (Maybe T.Te
 options :: Opt.Parser Options
 options =
   Options <$> Opt.switch ( Opt.long "no-preview"
-                        <> Opt.short 'p'
+                        <> Opt.short 'n'
                         <> Opt.help "Don't render an inline image preview." )
           <*> ( ( OptSearch <$> textOption ( Opt.long "search"
                                           <> Opt.short 's'
@@ -106,9 +106,13 @@ main = do
                                       . traverse )
                                     & join
 
-      resp' <- sequence $ Wreq.get <$> (show <$> fstUrl)
+      -- TODO: Understand lens actions and perform the fetch + tuple transform
+      --       through it.
+      let doReq uri = Wreq.get uri >>= (\resp' -> return (uri, resp'))
+      resp' <- sequence $ doReq <$> (show <$> fstUrl)
+
       case resp' of
-        Right r -> printGif r
+        Right r -> uncurry (printGif opts) r
         Left e -> TIO.hPutStrLn stderr $ "Error: " <> e
 
     getApp :: Options -> Giphy.Giphy [Giphy.Gif]
@@ -118,10 +122,12 @@ main = do
         OptTranslate t -> translateApp t
         OptRandom r -> randomApp r
 
-    printGif :: Wreq.Response BSL.ByteString -> IO ()
-    printGif r = do
-      render <- getImageRenderer
-      BS8.putStrLn . render $ consoleImage True (r ^. Wreq.responseBody)
+    printGif :: Options -> String -> Wreq.Response BSL.ByteString -> IO ()
+    printGif opts uri r = do
+      unless (optNoPreview opts) $ do
+        render <- getImageRenderer
+        BS8.putStrLn . render $ consoleImage True (r ^. Wreq.responseBody)
+      putStrLn uri
 
 translateApp :: T.Text -> Giphy.Giphy [Giphy.Gif]
 translateApp q = do
