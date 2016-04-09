@@ -10,7 +10,7 @@ import qualified Data.Text                  as T
 import qualified Data.Text.IO               as TIO
 import qualified Network.Wreq               as Wreq
 import qualified Options.Applicative        as Opt
-import qualified Options.Applicative.Types  as Opt
+import qualified Options.Applicative.Text   as Opt
 import qualified Web.Giphy                  as Giphy
 
 import           Control.Applicative        (optional, (<**>), (<|>))
@@ -40,23 +40,13 @@ options =
   Options <$> Opt.switch ( Opt.long "no-preview"
                         <> Opt.short 'n'
                         <> Opt.help "Don't render an inline image preview." )
-          <*> ( ( OptSearch <$> textOption ( Opt.long "search"
+          <*> ( ( OptSearch <$> Opt.textOption ( Opt.long "search"
                                           <> Opt.short 's'
                                           <> Opt.help "Use search to find a matching GIF." ) )
-          <|> ( OptTranslate <$> textOption ( Opt.long "translate"
+          <|> ( OptTranslate <$> Opt.textOption ( Opt.long "translate"
                                            <> Opt.short 't'
                                            <> Opt.help "Use translate to find a matching GIF." ) )
-          <|> ( OptRandom <$> optional ( textArgument ( Opt.metavar "RANDOM_TAG" ) ) ) )
-  where
-    -- TODO: This seems quite useful. Maybe publish as Options.Applicative.Text?
-    text :: Opt.ReadM T.Text
-    text = T.pack <$> Opt.readerAsk
-
-    textOption :: Opt.Mod Opt.OptionFields T.Text -> Opt.Parser T.Text
-    textOption = Opt.option text
-
-    textArgument :: Opt.Mod Opt.ArgumentFields T.Text -> Opt.Parser T.Text
-    textArgument = Opt.argument text
+          <|> ( OptRandom <$> optional ( Opt.textArgument ( Opt.metavar "RANDOM_TAG" ) ) ) )
 
 cliParser :: String -> Version -> Opt.ParserInfo Options
 cliParser progName ver =
