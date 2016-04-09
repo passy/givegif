@@ -1,6 +1,6 @@
 name: givegif
-version: 0.2.4.0
-synopsis: Giphy search tool for iTerm 2.
+version: 1.0.0.0
+synopsis: CLI Giphy search tool with previews in iTerm 2
 description: Please see README.md
 homepage: http://github.com/passy/givegif#readme
 license: BSD3
