@@ -8,7 +8,7 @@
 
 ## Demo
 
-![](media/usage.gif)
+![](https://github.com/passy/givegif/raw/master/media/usage.gif)
 
 ## Usage
 
