@@ -27,8 +27,19 @@ Available options:
 
 ## Installation
 
+### Homebrew
+
+```bash
+brew tap passy/givegif
+brew install givegif
+```
+
+### Binaries
+
 Check out the latest [releases](https://github.com/passy/givegif/releases) for
 precompiled binaries.
+
+### Stack
 
 Alternatively, feel free to build it yourself with
 [stack](http://haskellstack.org).
