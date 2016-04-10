@@ -2,8 +2,6 @@
 
 [![Build Status](https://travis-ci.org/passy/givegif.svg?branch=master)](https://travis-ci.org/passy/givegif)
 
-**WARNING: Some of the steps in the readme don't quite reflect reality yet.**
-
 > Find and display GIFs from the command line.
 
 [![Power by Giphy](media/giphypowered.png)](https://github.com/Giphy/GiphyAPI)
