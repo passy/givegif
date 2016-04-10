@@ -6,7 +6,7 @@
 
 > Find and display GIFs from the command line.
 
-![Power by Giphy](media/giphypowered.png)
+[![Power by Giphy](media/giphypowered.png)](https://github.com/Giphy/GiphyAPI)
 
 ## Demo
 
