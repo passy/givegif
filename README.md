@@ -4,6 +4,8 @@
 
 > Find and display GIFs from the command line.
 
+Displaying the GIF inline requires [iTerm >=2.9](https://www.iterm2.com/downloads.html).
+
 [![Power by Giphy](media/giphypowered.png)](https://github.com/Giphy/GiphyAPI)
 
 ## Demo
