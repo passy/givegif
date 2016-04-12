@@ -1,7 +1,5 @@
-{-# LANGUAGE NoImplicitPrelude         #-}
 {-# LANGUAGE OverloadedStrings         #-}
 
-import           Prelude
 import           Test.Hspec
 import qualified Console as C
 import qualified Data.Map.Strict as M
