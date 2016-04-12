@@ -64,6 +64,8 @@ cliParser progName ver =
 apiKey :: Giphy.Key
 apiKey = Giphy.Key "dc6zaTOxFJmzC"
 
+errorGif = "http://i.giphy.com/U66k57wdrSfAI.gif"
+
 taggedPreview
   :: t
   -> Getting (First a) s a
@@ -103,7 +105,7 @@ main = do
 
       case resp' of
         Right r -> uncurry (printGif opts) r
-        Left e -> TIO.hPutStrLn stderr $ "Error: " <> e
+        Left e -> TIO.hPutStrLn stderr $ (errorGif <> "\nError: " <> e)
 
     getApp :: Options -> Giphy.Giphy [Giphy.Gif]
     getApp opts =
