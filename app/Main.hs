@@ -8,6 +8,7 @@ import qualified Data.ByteString.Lazy       as BSL
 import qualified Data.ByteString.Lazy.Char8 as BS8
 import qualified Data.Text                  as T
 import qualified Data.Text.IO               as TIO
+import qualified Network.URI
 import qualified Network.Wreq               as Wreq
 import qualified Options.Applicative        as Opt
 import qualified Options.Applicative.Text   as Opt
@@ -20,6 +21,7 @@ import           Control.Lens.Cons          (_head)
 import           Control.Lens.Operators
 import           Control.Lens.Prism         (_Left, _Right)
 import           Control.Monad              (join, unless)
+import           Data.Bifunctor             (second)
 import           Data.Monoid                (First (), (<>))
 import           Data.Version               (Version (), showVersion)
 import           Paths_givegif              (version)
@@ -71,6 +73,9 @@ taggedPreview
   -> Either t a
 taggedPreview tag l s = Err.note tag $ preview l s
 
+dupe :: a -> (a, a)
+dupe = join (,)
+
 main :: IO ()
 main = do
   progName <- getProgName
@@ -96,10 +101,9 @@ main = do
                                       . traverse )
                                     & join
 
-      -- TODO: Understand lens actions and perform the fetch + tuple transform
-      --       through it.
-      let doReq uri = Wreq.get uri >>= (\resp' -> return (uri, resp'))
-      resp' <- sequence $ doReq <$> (show <$> fstUrl)
+      let dupeUrl = fstUrl & _Right %~ second show . dupe
+      let doReq (a, uri) = Wreq.get uri >>= (\resp' -> return (a, resp'))
+      resp' <- sequence $ doReq <$> dupeUrl
 
       case resp' of
         Right r -> uncurry (printGif opts) r
@@ -112,12 +116,12 @@ main = do
         OptTranslate t -> translateApp t
         OptRandom r -> randomApp r
 
-    printGif :: Options -> String -> Wreq.Response BSL.ByteString -> IO ()
+    printGif :: Options -> Network.URI.URI -> Wreq.Response BSL.ByteString -> IO ()
     printGif opts uri r = do
       unless (optNoPreview opts) $ do
         render <- getImageRenderer
         BS8.putStrLn . render $ consoleImage True (r ^. Wreq.responseBody)
-      putStrLn uri
+      putStrLn $ Network.URI.uriToString id uri ""
 
 translateApp :: T.Text -> Giphy.Giphy [Giphy.Gif]
 translateApp q = do
