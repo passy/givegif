@@ -33,7 +33,6 @@ library:
     - optparse-applicative
   exposed-modules:
     - Console
-    - Options.Applicative.Text
 
 tests:
   spec:
@@ -61,6 +60,7 @@ executables:
       - givegif
       - giphy-api
       - optparse-applicative
+      - optparse-text
       - bytestring
       - lens
       - wreq
