@@ -2,6 +2,5 @@ flags: {}
 extra-package-dbs: []
 packages:
 - '.'
-extra-deps:
-  - optparse-text-0.1.0.0
-resolver: lts-6.0
+extra-deps: []
+resolver: lts-7.2
