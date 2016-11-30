@@ -26,7 +26,6 @@ dependencies:
 library:
   source-dirs: src
   dependencies:
-    - giphy-api >= 0.5.1.0
     - bytestring
     - base64-bytestring
     - containers
@@ -58,6 +57,7 @@ executables:
       - -Wall
     dependencies:
       - givegif
+      - giphy-api >= 0.5.1.0
       - optparse-applicative
       - optparse-text
       - bytestring
