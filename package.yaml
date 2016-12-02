@@ -1,5 +1,5 @@
 name: givegif
-version: 1.0.2.0
+version: 1.0.3.0
 synopsis: CLI Giphy search tool with previews in iTerm 2
 description: Please see README.md
 homepage: http://github.com/passy/givegif#readme
