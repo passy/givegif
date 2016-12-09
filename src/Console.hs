@@ -2,16 +2,17 @@
 
 module Console where
 
-import           Control.Applicative         (empty)
 import qualified Data.ByteString.Base64.Lazy as B64
 import qualified Data.ByteString.Builder     as B
-import           Data.ByteString.Lazy        (ByteString)
 import qualified Data.ByteString.Lazy.Char8  as BS8
-import           Data.List                   (isPrefixOf)
 import qualified Data.Map.Strict             as M
+import qualified System.Environment          as Env
+
+import           Control.Applicative         (empty)
+import           Data.ByteString.Lazy        (ByteString)
+import           Data.List                   (isPrefixOf)
 import           Data.Maybe                  (catMaybes)
 import           Data.Monoid                 ((<>))
-import qualified System.Environment          as Env
 
 data ConsoleImage = ConsoleImage
   { ciInline              :: !Bool

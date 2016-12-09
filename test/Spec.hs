@@ -1,10 +1,11 @@
 {-# LANGUAGE OverloadedStrings         #-}
 
-import           Test.Hspec
 import qualified Console as C
+import qualified Data.ByteString.Builder as B
 import qualified Data.Map.Strict as M
 import qualified Data.Set as S
-import qualified Data.ByteString.Builder as B
+
+import           Test.Hspec
 
 main :: IO ()
 main = hspec $ do
