@@ -3,8 +3,7 @@ packages:
 - '.'
 extra-deps:
 - authenticate-oauth-1.5.1.2
-- giphy-api-0.5.1.0
 - http-client-0.4.31.2
 - http-client-tls-0.2.4.1
 - wreq-0.4.1.0
-resolver: nightly-2016-11-28
+resolver: lts-8.0
