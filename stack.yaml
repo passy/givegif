@@ -1,9 +1,4 @@
 flags: {}
 packages:
 - '.'
-extra-deps:
-- authenticate-oauth-1.5.1.2
-- http-client-0.4.31.2
-- http-client-tls-0.2.4.1
-- wreq-0.4.1.0
-resolver: lts-8.6
+resolver: lts-9.0
