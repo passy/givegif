@@ -57,7 +57,7 @@ executables:
       - -Wall
     dependencies:
       - givegif
-      - giphy-api >= 0.5.1.0
+      - giphy-api >= 0.6.0.0
       - optparse-applicative
       - optparse-text
       - bytestring
