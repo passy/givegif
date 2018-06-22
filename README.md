@@ -50,7 +50,7 @@ Alternatively, feel free to build it yourself with
 ```bash
 $ stack install givegif
 $ givegif -V
-givegif 1.0.2.0
+givegif 1.0.3.0
 ```
 
 ## Known Issues
