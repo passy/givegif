@@ -22,7 +22,7 @@ import           Control.Lens.Operators
 import           Control.Lens.Prism         (_Left, _Right)
 import           Control.Monad              (join, unless)
 import           Data.Bifunctor             (second)
-import           Data.Monoid                (First (), (<>))
+import           Data.Monoid                (First ())
 import           Data.Version               (Version (), showVersion)
 import           Paths_givegif              (version)
 import           System.Environment         (getProgName)

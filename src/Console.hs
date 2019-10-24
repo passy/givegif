@@ -12,7 +12,6 @@ import           Control.Applicative         (empty)
 import           Data.ByteString.Lazy        (ByteString)
 import           Data.List                   (isPrefixOf)
 import           Data.Maybe                  (catMaybes)
-import           Data.Monoid                 ((<>))
 
 data ConsoleImage = ConsoleImage
   { ciInline              :: !Bool
