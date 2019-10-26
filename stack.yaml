@@ -1,4 +1,6 @@
 flags: {}
 packages:
 - '.'
-resolver: lts-13.22
+resolver: nightly-2019-10-26
+extra-deps:
+- wreq-0.5.3.2@sha256:eb1d848e983a1d1b8960c28840b55e56d8b3d760e9d014b5d9d018b13439e63f
