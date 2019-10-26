@@ -101,7 +101,7 @@ main = do
                                     & join
 
       let dupeUrl = fstUrl & _Right %~ second show . dupe
-      resp' <- sequence $ (sequence . fmap Wreq.get) <$> dupeUrl
+      resp' <- sequence $ sequence . fmap Wreq.get <$> dupeUrl
 
       case resp' of
         Right r -> uncurry (printGif opts) r
